@@ -1,0 +1,143 @@
+require "erb"
+require "fileutils"
+require "pathname"
+require "rdoc/generator/markup"
+require "rdoc_rest"
+require "yaml"
+
+class RDoc::Generator::REST
+  VERSION = RDocREST::VERSION
+  DESCRIPTION = "Generates documentation for REST APIs"
+  GENERATOR_DIR = File.join("rdoc", "generator")
+
+  include ERB::Util
+  RDoc::RDoc.add_generator(self)
+
+  def initialize(options)
+    @options = options
+    @template_dir = Pathname.new(options.template_dir)
+    @base_dir = Pathname.pwd.expand_path
+    @template_cache = {}
+  end
+
+  def parse_metadata(comment, code_object, fields)
+    comment.gsub!(/:(#{fields}):([ \t]*)(.+)\n*/) do
+      code_object.metadata[$1] = $3
+      ""
+    end
+  end
+
+  def generate(top_levels)
+    @output_dir = Pathname.new(@options.op_dir).expand_path(@base_dir)
+
+    # Load external routing map in place of in-comment attributes
+    route_file = File.join(@base_dir, "test.txt")
+    @routes = YAML.load_file(route_file) if File.exists?(route_file)
+
+    copy_assets
+
+    # Run through every file and parse out any metadata that we use.
+    # Can't use the preprocessor data as that's saved per class, and not per method like we need.
+    top_levels.each do |file|
+      file.classes.each do |klass|
+        mkpath = nil
+
+        parse_metadata(klass.comment, klass, "class_name|api_status|path")
+        # Classes are public by default, but can be forced private if needed
+        next if klass.metadata["api_status"] == "private"
+
+        klass.each_method do |method|
+          parse_metadata(method.comment, method, "method_name|api_status|path|http_req")
+          # Methods by default are private unless otherwise
+          next if method.metadata["api_status"] != "public" && method.visibility == :public
+
+          unless mkpath
+            Pathname.new(@output_dir + file.path).dirname.mkpath
+            mkpath = true
+          end
+
+          write_method(file, klass, method)
+        end
+      end
+    end
+  end
+
+  def copy_assets
+    options = {:verbose => $DEBUG_RDOC, :noop => @options.dry_run}
+    FileUtils.cp(@template_dir + "rdoc.css", ".", options)
+
+    Dir["#{@template_dir}{js,images}/**/*"].each do |path|
+      next if File.directory?(path) or File.basename(path) =~ /^\,/
+
+      dest = Pathname.new(path).relative_path_from(@template_dir)
+      dirname = dest.dirname
+
+      FileUtils.mkdir_p(dirname, options) unless File.exists?(dirname)
+      FileUtils.cp(@template_dir + path, dest, options)
+    end
+  end
+
+  def write_method(file, klass, method)
+    class_name = klass.metadata["class_name"] || klass.full_name
+    method_name = method.metadata["method_name"] || method.name
+    title = "#{class_name} -> #{method_name}"
+
+    output_file = Pathname.new(@output_dir + klass.path)
+    asset_prefix = @output_dir.relative_path_from(output_file.dirname)
+    api_route, @context = @routes && @routes["#{file.relative_name}/#{method.name}"], binding
+
+    # Default to whatever is set in the API
+    unless api_route
+      api_route = {:type => method.metadata["http_req"], :path => "#{klass.metadata["path"]}#{method.metadata["path"]}"}
+    end
+
+    # Any public API without a set HTTP request type or path is invalid
+    if api_route[:type].nil? or api_route[:type] == "" or api_route[:path].nil? or api_route[:type] == "" or api_route[:type] == klass.metadata["path"]
+      raise RDoc::Error.new("error generating #{output_file}: Missing either http_req or path to the API")
+    end
+
+    content = <<-HTML
+<!DOCTYPE html>
+<html>
+  <head>
+    #{render_file("_header.rhtml")}
+  </head>
+
+  #{render_file("page.rhtml")}
+
+  #{render_file("_footer.rhtml")}
+</html>
+    HTML
+
+    return if @options.dry_run
+
+    output_file.open("w+", 0644) do |io|
+      io.set_encoding(@options.encoding) if Object.const_defined? :Encoding
+      io.write(content)
+    end
+  end
+
+  def render_file(path)
+    if source = @template_cache[path]
+      return source.result(@context)
+    end
+
+    @template_cache[path] = ERB.new(File.read(@template_dir + path), nil, "<>")
+    @template_cache[path].result(@context)
+  end
+
+  # Where generated class files go relative to output dir
+  def class_dir
+    nil
+  end
+
+  # Where generated class files go relative to the output dir
+  def file_dir
+    nil
+  end
+
+  # Create base directory structure for generated docs
+  def gen_sub_directories
+    @output_dir.mkpath
+  end
+end
