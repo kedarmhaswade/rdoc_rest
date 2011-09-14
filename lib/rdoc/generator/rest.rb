@@ -44,16 +44,19 @@ class RDoc::Generator::REST
       file.classes.each do |klass|
         mkpath = nil
 
+        klass.metadata.clear
         parse_metadata(klass.comment, klass, "class_name|api_status|path")
+
         # Classes are public by default, but can be forced private if needed
         next if klass.metadata["api_status"] == "private"
 
         methods = []
 
         klass.each_method do |method|
+          method.metadata.clear
           parse_metadata(method.comment, method, "method_name|api_status|path|http_req")
           # Methods by default are private unless otherwise
-          next if method.metadata["api_status"] != "public" && method.visibility == :public
+          next if method.metadata["api_status"] != "public" || method.visibility != :public
 
           unless mkpath
             Pathname.new("#{@output_dir}#{method_path(file, method)}").dirname.mkpath
