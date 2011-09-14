@@ -54,7 +54,7 @@ class RDoc::Generator::REST
 
         klass.each_method do |method|
           method.metadata.clear
-          parse_metadata(method.comment, method, "method_name|api_status|path|http_req")
+          parse_metadata(method.comment, method, "method_name|api_status|path|http_req|returns")
           # Methods by default are private unless otherwise
           next if method.metadata["api_status"] != "public" || method.visibility != :public
 

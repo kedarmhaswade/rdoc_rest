@@ -21,6 +21,7 @@ Method arguments:
 
 `method_name` - The name of the method, overrides the method name
 `api_status` - Per-method setting of the API, by default all API methods are private
+`returns` - Generic field for what the API returns, can be used if you want to add automatic JSON highlighting or pretty printing
 `path` - Path to the API request
 
 # Customization
