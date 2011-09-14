@@ -1,0 +1,91 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  background-color: #F4F4F4;
+}
+
+#global {
+  height: 40px;
+  width: 100%;
+  margin-bottom: 20px;
+  background-color: #E5E5E5;
+  border-bottom: 1px solid #ACACAC;
+}
+
+#wrapper {
+  width: 960px;
+  margin: 0 auto;
+  border: 1px solid #CCCCCC;
+  background-color: #FFFFFF;
+  -moz-box-shadow: 0 3px 4px #CCCCCC;
+  -webkit-box-shadow: 0 3px 4px #CCCCCC;
+}
+
+#sidebar {
+  display: inline-block;
+  border-right: 1px solid #CCCCCC;
+  width: 230px;
+  height: 100%;
+}
+
+.content {
+  width: 719px;
+  height: 100%;
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 0 8px 6px;
+}
+
+.content h3:first-child {
+  margin-top: 6px;
+}
+
+.category {
+  background-color: #EDF8FA;
+  border-bottom: 1px solid #E3E3E3;
+  padding: 8px 0 8px 6px;
+}
+
+.category.active {
+  font-weight: bold;
+}
+
+#sidebar .methods {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#sidebar .methods li {
+  border-bottom: 1px solid #E3E3E3;
+}
+
+#sidebar .methods li a {
+  padding: 6px 0 6px 6px;
+  width: 224px;
+  display: block;
+  color: #1F2891;
+  text-decoration: none;
+}
+
+#sidebar .methods li.active a {
+  background-color: #F4F4F4;
+  font-weight: bold;
+}
+
+#sidebar .methods li a:hover {
+  background-color: #E8E8E8;
+}
+
+#sidebar .methods:last-child li:last-child {
+  border-bottom: none;
+}
+
+#documentation .url {
+  font-weight: bold;
+  font-size: 120%;
+}
