@@ -6,6 +6,21 @@ To run with the default template, just do `rdoc --fmt rest`
 # Example
 See examples/ for example syntax as well as the end result.
 
+# Syntax
+By default, all API methods are private unless otherwise specified. If an API is private or protected scoped in Ruby it will not show up regardless of api_status._
+
+Class arguments:
+
+`class_file` - The name of the class file, overrides the classes name
+`api_status` - Global setting if the controller is *public* or *private*, by default controllers are public and methods are private
+`path` - Root path for the class, if you set /foo/ then every public method will have /foo/ prefixed to the path. Ignored when using route detection
+
+Method arguments:
+
+`method_name` - The name of the method, overrides the method name
+`api_status` - Per-method setting of the API, by default all API methods are private
+`path` - Path to the API request
+
 # Customization
 As this is intended for REST API documentation rather than code documentation, it's assumed you will want some level of customization. The default template in lib/rdoc/generator/template/rest is only intended as an example or starting point.
 
