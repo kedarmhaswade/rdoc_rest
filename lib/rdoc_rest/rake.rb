@@ -6,7 +6,10 @@ namespace :rest do
     Rails.application.routes.routes.each do |route|
       next unless route.app.class.name.to_s =~ /^ActionDispatch::Routing/
       reqs = route.requirements
-      data["app/controllers/#{reqs[:controller]}_controller.rb/#{reqs[:action]}"] = {:path => route.path, :type => route.verb.to_s}
+      path = route.path
+      path = path.gsub("(.:format)", "") if ENV["no_format"]
+
+      data["app/controllers/#{reqs[:controller]}_controller.rb/#{reqs[:action]}"] = {:path => path, :type => route.verb.to_s}
     end
 
     file = File.open(File.join(Rails.root, "tmp", "routes.txt"), "w+")
