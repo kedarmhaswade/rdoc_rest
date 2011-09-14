@@ -1,12 +1,12 @@
 <body>
-  <%= render_file("_sidebar.rhtml") %>
-
-  <div id="documentation">
-    <h3><%= class_name %> (<%= method_name %>)</h3>
-    <span class="url"><%= api_route[:type].upcase %>: <%= api_route[:path] %></span>
-
-    <div class="description">
-      <%= method.description %>
+  <div id="wrapper">
+    <%= render_file("_sidebar.rhtml") %>
+    <div class="content" id="documentation">
+      <h3><%= class_name %> -> <%= method_name %></h3>
+      <div class="url">HTTP <%= api_route[:type].upcase %>: <%= api_route[:path] %></div>
+      <div class="description">
+        <%= method.description %>
+      </div>
     </div>
   </div>
 </body>
