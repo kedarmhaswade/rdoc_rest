@@ -18,5 +18,4 @@ Gem::Specification.new do |s|
   s.rubyforge_project         = "rdoc_rest"
 
   s.add_runtime_dependency "rdoc", ">= 2.4"
-  s.add_development_dependency "rspec", "~> 2.0.0"
 end
