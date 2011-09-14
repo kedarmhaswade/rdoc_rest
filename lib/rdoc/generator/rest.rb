@@ -59,7 +59,7 @@ class RDoc::Generator::REST
           next if method.metadata["api_status"] != "public" || method.visibility != :public
 
           unless mkpath
-            Pathname.new("#{@output_dir}#{method_path(file, method)}").dirname.mkpath
+            Pathname.new("#{@output_dir}#{method_slug(klass, method)}").dirname.mkpath
             mkpath = true
           end
 
@@ -109,8 +109,18 @@ class RDoc::Generator::REST
     write_file(output_file, "index.rhtml")
   end
 
-  def method_path(file, method)
-    "/#{file.relative_name.gsub(/\.([a-zA-Z]+)$/, "")}/#{method.name}.html"
+  def create_slug(text)
+    text = text.downcase
+    text.gsub!(/[_\s]/, "-")
+    text.gsub!(/[^a-z0-9\-]/, "")
+    text.gsub!(/-{2,}/, "-")
+    text
+  end
+
+  def method_slug(klass, method)
+    path = "/#{create_slug(klass.metadata["class_name"] || klass.full_name)}/#{create_slug(method.metadata["method_name"] || method.name)}.html"
+    path.gsub!(ENV["STRIP_PATH"], "") if ENV["STRIP_PATH"]
+    path
   end
 
   def write_method(file, klass, method)
@@ -119,7 +129,7 @@ class RDoc::Generator::REST
     title = "#{class_name} -> #{method_name}"
     title << " | #{@options.title}" unless @options.title.nil?
 
-    output_file = Pathname.new("#{@output_dir}#{method_path(file, method)}")
+    output_file = Pathname.new("#{@output_dir}#{method_slug(klass, method)}")
     asset_prefix = @output_dir.relative_path_from(output_file.dirname)
     api_route, @context = @routes && @routes["#{file.relative_name}/#{method.name}"], binding
     current_file, current_method = file, method

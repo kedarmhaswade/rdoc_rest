@@ -5,7 +5,7 @@
     </div>
     <ul class="methods">
       <% methods.each do |nav_method| %>
-        <li<%= nav_method == @current_method && " class=\"active\"" || "" %>><a href="<%= method_path(file, nav_method) %>"><%= nav_method.metadata["method_name"] || nav_method.name.gsub("_", " ").capitalize %></a></li>
+        <li<%= nav_method == @current_method && " class=\"active\"" || "" %>><a href="<%= method_slug(nav_klass, nav_method) %>"><%= nav_method.metadata["method_name"] || nav_method.name.gsub("_", " ").capitalize %></a></li>
       <% end %>
     </ul>
   <% end %>

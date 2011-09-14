@@ -3,6 +3,8 @@ Generator for RDoc that lets you do in-code documentation of REST APIs and gener
 
 To run with the default template, just do `rdoc --fmt rest`
 
+You can strip part of the path for storing files by setting a STRIP_PATH env. For example, STRIP_PATH="app/controllers/" will make sure all controllers are stored without the "app/controllers" path
+
 # Example
 See examples/ for example syntax as well as the end result.
 
