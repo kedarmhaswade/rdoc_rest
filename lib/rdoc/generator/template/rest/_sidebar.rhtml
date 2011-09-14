@@ -1,11 +1,11 @@
 <nav id="sidebar">
-  <% @sorted_classes.each do |file, nav_klass, methods| %>
+  <% @sorted_classes.each do |nav_file, nav_klass, methods| %>
     <div class="category<%= nav_klass == @current_class && " active" || "" %>">
       <%= nav_klass.metadata["class_name"] || nav_klass.full_name %>
     </div>
     <ul class="methods">
       <% methods.each do |nav_method| %>
-        <li<%= nav_method == @current_method && " class=\"active\"" || "" %>><a href="<%= method_slug(nav_klass, nav_method) %>"><%= nav_method.metadata["method_name"] || nav_method.name.gsub("_", " ").capitalize %></a></li>
+        <li<%= nav_method == @current_method && " class=\"active\"" || "" %>><a href="<%= method_slug(nav_file, nav_klass, nav_method) %>"><%= nav_method.metadata["method_name"] || nav_method.name.gsub("_", " ").capitalize %></a></li>
       <% end %>
     </ul>
   <% end %>
