@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Zachary Anker"]
   s.email       = ["zach.anker@gmail.com"]
-  s.homepage    = "http://github.com/Placester/rest-doc-generator"
+  s.homepage    = "https://github.com/Placester/rdoc_rest"
   s.summary     = "Documentation generator for REST APIs"
   s.description = "Adds in-code documentation to generate static documentation for REST APIs."
 
