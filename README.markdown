@@ -13,19 +13,16 @@ By default, all API methods are private unless otherwise specified. If an API is
 
 Class arguments:
 
-`class_file` - The name of the class file, overrides the classes name
-`api_status` - Global setting if the controller is *public* or *private*, by default controllers are public and methods are private
-`path` - Root path for the class, if you set /foo/ then every public method will have /foo/ prefixed to the path. Ignored when using route detection
+- `class_file` - The name of the class file, overrides the classes name
+- `api_status` - Global setting if the controller is *public* or *private*, by default controllers are public and methods are private
+- `path` - Root path for the class, if you set /foo/ then every public method will have /foo/ prefixed to the path. Ignored when using route detection
 
 Method arguments:
 
-`method_name` - The name of the method, overrides the method name
-
-`api_status` - Per-method setting of the API, by default all API methods are private
-
-`returns` - Generic field for what the API returns, can be used if you want to add automatic JSON highlighting or pretty printing
-
-`path` - Path to the API request
+- `method_name` - The name of the method, overrides the method name
+- `api_status` - Per-method setting of the API, by default all API methods are private
+- `returns` - Generic field for what the API returns, can be used if you want to add automatic JSON highlighting or pretty printing
+- `path` - Path to the API request
 
 # Customization
 As this is intended for REST API documentation rather than code documentation, it's assumed you will want some level of customization. The default template in lib/rdoc/generator/template/rest is only intended as an example or starting point.
